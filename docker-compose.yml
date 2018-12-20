@@ -1,0 +1,19 @@
+version: '3'
+services:
+  pubsub:
+    image: singularities/pubsub-emulator
+    environment:
+      PUBSUB_LISTEN_ADDRESS: 0.0.0.0
+      PUBSUB_PROJECT_ID: my-project
+    expose:
+      - "8080"
+  pubsub-topic-creator:
+    build: services/pubsub-topic-creator
+    environment:
+      PUBSUB_EMULATOR_HOST: pubsub:8080
+      PUBSUB_PROJECT_ID: my-project
+    volumes:
+      - ./services/pubsub-topic-creator/topics.json:/topics.json
+      - ./services/pubsub-topic-creator/index.js:/index.js
+    depends_on:
+      - pubsub
